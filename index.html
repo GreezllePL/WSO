@@ -9,6 +9,7 @@
     .checkbox-group { margin-left: 20px; margin-top: 10px; }
     button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
     .hidden { display: none; }
+    textarea { width: 100%; height: 100px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -17,317 +18,225 @@
   <div id="app"></div>
 
   <script>
-    const baseDocuments = [
-      {
-        name: "Strona Tytułowa",
-        fields: [
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Województwo, powiat, gmina, Jedn. ewid",
-          "Obręb",
-          "Działki",
-          "Wykonawca",
-          "Cel prac",
-          "Spis treści - Wszystkie potrzebne dokumenty",
-          "Data u dołu strony ≥ dacie zakończenia w sprawozdaniu"
-        ]
-      },
-      {
-        name: "Sprawozdanie techniczne",
-        fields: [
-          "Cel prac",
-          "ZGŁOSZENIE UZUPEŁNIAJĄCE NA WZN/WYZN/UST",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Wykonawca",
-          "Kierownik - imię i nazwisko oraz uprawnienia",
-          "Data rozpoczęcia przed protokołem",
-          "Data zakończenia po protokole",
-          "Czynności",
-          "Opis co podlegało inwentaryzacji",
-          "Działeczki, j.e, obr, data protokołu",
-          "Osnowa - numer i stabilizacja",
-          "Opis stabilizacji",
-          "Dokumenty wykorzystane",
-          "Info o zmianie współrzędnych",
-          "Opis odtworzenia",
-          "Podstawa ustalenia",
-          "Podstawa podziału",
-          "Technologie i metody",
-          "Bazy"
-        ]
-      },
-      {
-        name: "Mapa porównania z terenem",
-        fields: [
-          "Skala",
-          "Województwo, powiat",
-          "Gmina",
-          "Obręb",
-          "Działka",
-          "Sekcja",
-          "Data",
-          "Pieczątka kierownika",
-          "Info o zmianach",
-          "Północ",
-          "Zmiany na czerwono",
-          "Numery działek",
-          "Użytki"
-        ]
-      },
-      {
-        name: "Szkic",
-        commonFields: [
-          "Osnowa",
-          "Adres",
-          "Data zgodna ze sprawkiem",
-          "Wykonawca - pieczątka",
-          "Kierownik - pieczątka",
-          "Obręb",
-          "Numer szkicu",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Cel prac",
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne",
-          "Podpis kierownika prac"
-        ],
-        specificFields: [
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne dr, w, szczególnie jeśli zmiana to na co Bp, Br, Bi, B? Zakres zmiany? Podstawa zmiany?",
-          "Podpis kierownika prac"
-        ]
-      },
-      {
-        name: "Szkic przyjęcia",
-        commonFields: [
-          "Osnowa",
-          "Adres",
-          "Data zgodna ze sprawkiem",
-          "Wykonawca - pieczątka",
-          "Kierownik - pieczątka",
-          "Obręb",
-          "Numer szkicu",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Cel prac",
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne",
-          "Podpis kierownika prac"
-        ],
-        specificFields: [
-          "KW",
-          "Własność",
-          "Czerwonym kolorem przyjmowane granice",
-          "Użytki"
-        ]
-      },
-      {
-        name: "Szkic wznowienia/wyznaczenia",
-        commonFields: [
-          "Osnowa",
-          "Adres",
-          "Data zgodna ze sprawkiem",
-          "Wykonawca - pieczątka",
-          "Kierownik - pieczątka",
-          "Obręb",
-          "Numer szkicu",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Cel prac",
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne",
-          "Podpis kierownika prac"
-        ],
-        specificFields: [
-          "KW",
-          "Własność",
-          "Czerwonym kolorem wznawiane znaki",
-          "Stabilizacje, które zostały realnie zrealizowane",
-          "Użytki"
-        ]
-      },
-      {
-        name: "Szkic z projektem podziału nieruchomości",
-        commonFields: [
-          "Osnowa",
-          "Adres",
-          "Data zgodna ze sprawkiem",
-          "Wykonawca - pieczątka",
-          "Kierownik - pieczątka",
-          "Obręb",
-          "Numer szkicu",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Cel prac",
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne",
-          "Podpis kierownika prac"
-        ],
-        specificFields: [
-          "Na czerwono podział granic",
-          "Na czerwono punkty graniczne",
-          "Na czerwono skreślenie starego",
-          "Na żółto granice działki podlegającej podziałowi",
-          "Na zielono użytki",
-          "Służebności wpisano?"
-        ]
-      },
-      {
-        name: "Szkic z ustalenia",
-        commonFields: [
-          "Osnowa",
-          "Adres",
-          "Data zgodna ze sprawkiem",
-          "Wykonawca - pieczątka",
-          "Kierownik - pieczątka",
-          "Obręb",
-          "Numer szkicu",
-          "Identyfikator zgłoszenia prac geodezyjnych",
-          "Cel prac",
-          "Północ",
-          "Punkty mają numery",
-          "Punkty mają stabilizację",
-          "Punkty mają symbole",
-          "Odcinki mają czołówki",
-          "Linie mają miary ortogonalne",
-          "Działki mają numery",
-          "Działki mają użytki",
-          "Użytki są poprawne",
-          "Podpis kierownika prac"
-        ],
-        specificFields: [
-          "Szkic GRANICZNY",
-          "Podpisy właścicieli",
-          "Właściciele",
-          "KW",
-          "Na czerwono elementy podlegające podziałowi",
-          "Odcinki granic",
-          "Punkty graniczne",
-          "Zrealizowane stabilizacje"
-        ]
-      }
+    const szkicCommonFields = [
+      "Osnowa", "Adres", "Data zgodna ze sprawkiem", "Wykonawca - pieczątka",
+      "Kierownik - pieczątka", "Obręb", "Numer szkicu", "Identyfikator zgłoszenia prac geodezyjnych",
+      "Cel prac", "Północ", "Punkty mają numery", "Punkty mają stabilizację", "Punkty mają symbole",
+      "Odcinki mają czołówki", "Linie mają miary ortogonalne", "Działki mają numery",
+      "Działki mają użytki", "Użytki są poprawne", "Podpis kierownika prac"
     ];
+
+    const docProtokolUstalenia = { name: "Protokół ustalenia", fields: ["Identyfikator zgłoszenia prac geodezyjnych", "Obręb", "Działki", "Data", "Podstawa prawna (1,2 lub 3)", "Dokumenty zgodne z tym co w sprawku", "Podpisy w dobrej kolumnie", "Kierownik - pieczątka", "Podpisy kierownika na wszystkich stronach"] };
+const docProtokolPrzyjecia = { name: "Protokół przyjęcia", fields: ["# Protokół przyjęcia", "województwo", "powiat", "JE", "obręb", "obręb - nazwa", "obręb - numer", "Data", "uprawniony - imię i nazwisko", "uprawniony - numer uprawnień", "Identyfikator zgłoszenia prac geodezyjnych", "Miejscowość", "Adres", "Działki", "podstawa → KW, stan katastralny", "Działki - numery", "Działki - Własności", "Działki - podpisy", "materiały - zgodne ze sprawkiem?", "Nie stawili się", "Podpis geodety", "# Opis granic", "Opis granic - wszystkie działki", "Opis granic - stabilizacje", "Opis granic - podpis"] };
+const docProtokolWznowienia = { name: "Protokół wzn/wyzn", fields: ["Identyfikator zgłoszenia prac geodezyjnych", "Obręb", "Działki", "Data", "Podstawa prawna", "Dokumenty zgodne z tym co w sprawku", "Dobrze podkreśleni ludzie", "Kierownik - pieczątka", "Podpisy kierownika na wszystkich stronach", "Numery w 9)", "Opis w 10)", "Info w 11)", "Info 2 16)"] };
+
+const docSzkicZUstalenia = { name: "Szkic z ustalenia", commonFields: szkicCommonFields, specificFields: ["Szkic GRANICZNY", "Podpisy właścicieli", "Właściciele", "KW", "Na czerwono elementy podlegające podziałowi", "Odcinki granic", "Punkty graniczne", "Zrealizowane stabilizacje"] };
+const docSzkicPrzyjecia = { name: "Szkic przyjęcia", commonFields: szkicCommonFields, specificFields: ["KW", "Własność", "Czerwonym kolorem przyjmowane granice", "Użytki"] };
+const docSzkicWznowienia = { name: "Szkic wznowienia/wyznaczenia", commonFields: szkicCommonFields, specificFields: ["KW", "Własność", "Czerwonym kolorem wznawiane znaki", "Stabilizacje, które zostały realnie zrealizowane", "Użytki"] };
+const docSzkicPodzialu = { name: "Szkic z projektem podziału nieruchomości", commonFields: szkicCommonFields, specificFields: ["Na czerwono podział granic", "Na czerwono punkty graniczne", "Na czerwono skreślenie starego", "Na żółto granice działki podlegającej podziałowi", "Na zielono użytki", "Służebności wpisano?"] };
+const docSzkicEwidencji = { name: "Szkic do ewidencji", fields: ["# Szkic EGiB - rysunek", "północ", "punkty mają stabilizację", "punkty mają symbole", "działki mają użytki dr, w oraz zmieniane przez nas", "użytki są poprawne dr, w, szczególnie jeśli zmiana to na co Bp, Br, Bi, B? Zakres zmiany? Podstawa zmiany?", "budynki mają funkcje", "budynki mają adresy", "budynki mają identyfikatory", "# Szkic EGiB - tabelka", "adres", "data zgodna ze sprawkiem", "Wykonawca - pieczątka", "Kierownik - pieczątka", "obręb", "w nazwie szkicu wszystkie rzeczy które robimy", "identyfikator zgłoszenia prac geodezyjnych"] };
+const docSzkic = { name: "Szkic", commonFields: szkicCommonFields };
+
+const docStronaTytulowaFields = ["Identyfikator zgłoszenia prac geodezyjnych", "Województwo, powiat, gmina, Jedn. ewid", "Obręb", "Działki", "Wykonawca", "Cel prac", "Spis treści - Wszystkie potrzebne dokumenty", "Data u dołu strony ≥ dacie zakończenia w sprawozdaniu"];
+const docSprawozdanieFields = ["Cel prac", "ZGŁOSZENIE UZUPEŁNIAJĄCE NA WZN/WYZN/UST", "Identyfikator zgłoszenia prac geodezyjnych", "Wykonawca", "Kierownik - imię i nazwisko oraz uprawnienia", "Data rozpoczęcia przed protokołem", "Data zakończenia po protokole", "Czynności", "Opis co podlegało inwentaryzacji", "Działeczki, j.e, obr, data protokołu", "Osnowa - numer i stabilizacja", "Opis stabilizacji", "Dokumenty wykorzystane", "Info o zmianie współrzędnych", "Opis odtworzenia", "Podstawa ustalenia", "Podstawa podziału", "Technologie i metody", "Bazy"];
+const docDokumentyWykorzystaneFields = ["# Inwentaryzacja", "PZT", "decyzja pozwolenia na budowę LUB", "zgłoszenie budowy", "# Podział", "postanowienie o zaopiniowaniu WPP", "rzuty budynku"];
+const docWzdeFields = ["# Wykaz zmian - działka", "Gmina", "Obręb", "Jednostka rejestrowa", "KW", "Lewa strona - zgodna z EGiB", "Prawa strona - id działki", "Prawa strona - powierzchnia - zmiana czy przez odjęcie", "Prawa strona - suma powierzchni działek", "Prawa strona - suma powierzchni użytków", "Prawa strona - Jeśli przez odjęcie to czy użytki z prawej schodzą się do użytków z lewej", "Prawa strona - data", "Prawa strona - pieczątka kierownika"];
+const docWykazyWspolrzednychFields = ["# Wykaz NIE", "wszystkie punkty", "atrybuty są okay", "# Wykaz ZMO", "wszystkie punkty", "atrybuty są okay", "# Wykaz PRO", "wszystkie punkty", "atrybuty są okay"];
+
+const mapSubtypes = [
+  {
+    name: "Inwentaryzacja",
+    fields: ["# Mapa - tabelka", "opis co inwentaryzujemy", "j/w, czy jest taki sam jak w sprawku", "# Mapa - rysunek", "kolorowe elementy podlegające inwentarce", "# Mapa - klauzula", "numer zgłoszenia", "Wykonawca - pieczątka", "Kierownik - pieczątka", "Organ"]
+  },
+  {
+    name: "Podział",
+    fields: ["# Mapa - tabelka", "wykaz zmian gruntowych", "sumy", "podziałowe na czerwono", "numery", "użytki", "Wykaz synchronizacyjny - porównaj z KW", "dane dot. działkek przedmiotowych", "nr", "pow", "KW", "# Mapa - rysunek", "żółte działki podlegające pdoziałow", "czerwone", "linie podziałowe", "skreślenia", "powierzchnie"]
+  },
+  {
+    name: "IOGdCP",
+    fields: ["# Mapa - tabelka", "wykaz zmian gruntowych", "sumy", "podziałowe na czerwono", "numery", "użytki", "Wykaz synchronizacyjny - porównaj z KW", "LEGENDA", "dane dot. działek przedmiotowych", "nr", "pow.", "KW", "# Mapa - rysunek", "żółte działki podlegające czynnościom", "czerwone", "linie podziałowe", "skreślenia", "powierzchnie"]
+  }
+];
+
+const docMapaPorownaniaFields = [
+  "# Mapa - tabelka",
+  "skala - szczególnie przy inwentarce, sprawdź, czy dobra",
+  "woj, pow",
+  "Gmina",
+  "Obręb",
+  "Działka",
+  "sekcja - w 1:1000 jest inna, zwróć uwagę",
+  "data",
+  "Pieczątka kierownika",
+  "INFO O ZMIANACH, jeśli tych nie ma bo wtedy jest inne",
+  "# Mapa - rysunek",
+  "Północ",
+  "zmiany na czerwono",
+  "numery działek",
+  "użytki"
+];
+
+const baseDocuments = [
+  { name: "Strona Tytułowa", fields: docStronaTytulowaFields },
+  { name: "Sprawozdanie techniczne", fields: docSprawozdanieFields },
+  { name: "Mapa porównania z terenem", fields: docMapaPorownaniaFields },
+  { name: "Szkice", subtypes: [docSzkicZUstalenia, docSzkicPrzyjecia, docSzkicWznowienia, docSzkicPodzialu, docSzkicEwidencji, docSzkic] },
+  { name: "Wykaz pomierzonych lub obliczonych współrzędnych punktów szczegółów terenowych", fields: ["jest"] },
+  { name: "Dowody doręczeń zawiadomień, wezwań", fields: ["są wszystkie", "mają daty i te daty są przed terminem granicznym"] },
+  { name: "Protokoły", subtypes: [docProtokolUstalenia, docProtokolPrzyjecia, docProtokolWznowienia] },
+  { name: "Poświadczone za zgodność z oryginałem kopie innych dokumentów niepochodzących z zasobu, które zostały wykorzystane przez wykonawcę", fields: docDokumentyWykorzystaneFields },
+  { name: "Wykazy współrzędnych punktów granicznych", fields: docWykazyWspolrzednychFields },
+  { name: "Wykaz Zmian Danych Ewidencyjnych", fields: docWzdeFields },
+  { name: "Mapy - Standardy techniczne §24", subtypes: mapSubtypes }
+];
 
     let currentStep = 0;
     let currentDocument = null;
+
+    function selectSubtypeInstance(groupName, subtypeName, instanceId) {
+      const group = baseDocuments.find(d => d.name === groupName);
+      const subtype = group.subtypes.find(s => s.name === subtypeName);
+      currentDocument = {
+        name: `${groupName} - ${subtypeName} (${instanceId})`,
+        fields: subtype.fields,
+        commonFields: subtype.commonFields,
+        specificFields: subtype.specificFields
+      };
+      currentStep = 1;
+      renderStep();
+    }
+
+    function addSubtypeInstance(groupName, subtypeName) {
+      const key = `${groupName} - ${subtypeName} - instances`;
+      const instances = JSON.parse(localStorage.getItem(key) || "[]");
+      const newId = instances.length > 0 ? Math.max(...instances) + 1 : 1;
+      instances.push(newId);
+      localStorage.setItem(key, JSON.stringify(instances));
+      showFields(baseDocuments.find(d => d.name === groupName));
+    }
 
     function renderStep() {
       const app = document.getElementById("app");
       app.innerHTML = "";
 
       if (currentStep === 0) {
-        // Menu wyboru dokumentu
-        const stepDiv = document.createElement("div");
-        stepDiv.className = "step";
-
-        const title = document.createElement("h3");
-        title.textContent = "Wybierz dokument do sprawdzenia";
-        stepDiv.appendChild(title);
-
-        baseDocuments.forEach(doc => {
-          const button = document.createElement("button");
-          button.textContent = doc.name;
-          button.onclick = () => showFields(doc);
-          stepDiv.appendChild(button);
-        });
-
-        app.appendChild(stepDiv);
+        app.innerHTML = `
+          <div class="step">
+            <h3>Wybierz dokument do sprawdzenia</h3>
+            ${baseDocuments.map(doc => `<div><button style='display:block; margin-bottom:10px' onclick="showFields(baseDocuments[${baseDocuments.indexOf(doc)}])">${doc.name}</button></div>`).join("")}
+            <button onclick="exportAllProgress()">📤 Eksportuj cały operat</button>
+            <textarea id="exportedJSON" readonly placeholder="Tu pojawi się eksport JSON całego sprawdzania"></textarea>
+          </div>
+        `;
       }
 
       if (currentStep === 1) {
-        // Wyświetlenie szczegółów wybranego dokumentu
-        const stepDiv = document.createElement("div");
-        stepDiv.className = "step";
-        
-        const title = document.createElement("h3");
-        title.textContent = `Sprawdź elementy dokumentu: ${currentDocument.name}`;
-        stepDiv.appendChild(title);
+        const fields = [
+          ...(currentDocument.fields || []),
+          ...(currentDocument.commonFields || []),
+          ...(currentDocument.specificFields || [])
+        ];
 
-        const checkboxGroup = document.createElement("div");
-        checkboxGroup.className = "checkbox-group";
+        const savedState = JSON.parse(localStorage.getItem(currentDocument.name) || "{}");
 
-        // Dodajemy wspólne pola dla każdego dokumentu
-        currentDocument.commonFields && currentDocument.commonFields.forEach(field => {
-          const label = document.createElement("label");
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.name = field;
-          checkbox.style.marginRight = "8px";
-          label.appendChild(checkbox);
-          label.append(field);
-          checkboxGroup.appendChild(label);
-          checkboxGroup.appendChild(document.createElement("br"));
+        const checkboxHTML = fields.map(field => {
+          if (field.startsWith("# ")) {
+            return `<strong>${field.replace(/^# /, "")}</strong><br>`;
+          }
+          return `<label><input type=\"checkbox\" name=\"${field}\" ${savedState[field] ? "checked" : ""}>${field}</label><br>`;
+        }).join("");
+
+        app.innerHTML = `
+          <div class="step">
+            <h3>Sprawdź elementy dokumentu: ${currentDocument.name}</h3>
+            <div class="checkbox-group">
+              ${checkboxHTML}
+            </div>
+            <button onclick="saveProgress()">Zapisz</button>
+            <button onclick="goBack()">Wróć</button>
+          </div>
+        `;
+
+        document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+          cb.addEventListener("change", () => saveProgress());
         });
-
-        // Dodajemy specyficzne pola dla danego typu dokumentu
-        currentDocument.specificFields && currentDocument.specificFields.forEach(field => {
-          const label = document.createElement("label");
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.name = field;
-          checkbox.style.marginRight = "8px";
-          label.appendChild(checkbox);
-          label.append(field);
-          checkboxGroup.appendChild(label);
-          checkboxGroup.appendChild(document.createElement("br"));
-        });
-
-        stepDiv.appendChild(checkboxGroup);
-
-        const nextBtn = document.createElement("button");
-        nextBtn.textContent = "Dalej";
-        nextBtn.onclick = () => {
-          currentStep = 0;  // Powrót do menu wyboru dokumentu
-          renderStep();
-        };
-
-        stepDiv.appendChild(nextBtn);
-        app.appendChild(stepDiv);
       }
 
       if (currentStep === 2) {
-        // Zakończenie sprawdzania operatu
         app.innerHTML = "<h2>Sprawdzanie operatu zostało zakończone ✅</h2>";
       }
     }
 
     function showFields(doc) {
-      currentStep = 1;  // Zaczynamy sprawdzanie wybranego dokumentu
-      currentDocument = doc;
+  if (doc.subtypes) {
+    const app = document.getElementById("app");
+    app.innerHTML = `<div class="step">
+      <h3>Wybierz typ dokumentu w: ${doc.name}</h3>
+      ${doc.subtypes.map(sub => {
+        const instances = JSON.parse(localStorage.getItem(`${doc.name} - ${sub.name} - instances`) || "[]");
+        return `
+          <div style='margin-bottom: 10px'>
+            <strong>${sub.name}</strong><br>
+            ${instances.map((id, i) => `<button style='display:block; margin-bottom:5px' onclick='selectSubtypeInstance("${doc.name}", "${sub.name}", ${id})'>${sub.name} (${i + 1})</button>`).join("")}
+            <button style='margin-top:5px' onclick='addSubtypeInstance("${doc.name}", "${sub.name}")'>➕ Dodaj ${sub.name}</button>
+          </div>
+        `;
+      }).join("")}
+      <button onclick="goBack()">Wróć</button>
+    </div>`;
+  } else {
+    currentStep = 1;
+    currentDocument = doc;
+    renderStep();
+  }
+}
+
+function selectSubtype(groupName, subtypeName) {
+      const group = baseDocuments.find(d => d.name === groupName);
+      const subtype = group.subtypes.find(s => s.name === subtypeName);
+      currentDocument = {
+        name: `${groupName} - ${subtypeName}`,
+        fields: subtype.fields,
+        commonFields: subtype.commonFields,
+        specificFields: subtype.specificFields
+      };
+      currentStep = 1;
       renderStep();
     }
 
-    renderStep();  // Uruchomienie aplikacji
+    function goBack() {
+      currentStep = 0;
+      renderStep();
+    }
+
+    function saveProgress() {
+      const checkboxes = document.querySelectorAll("input[type='checkbox']");
+      const state = {};
+      checkboxes.forEach(cb => state[cb.name] = cb.checked);
+      localStorage.setItem(currentDocument.name, JSON.stringify(state));
+    }
+
+    function exportAllProgress() {
+      const allProgress = {};
+      baseDocuments.forEach(doc => {
+        if (doc.subtypes) {
+          doc.subtypes.forEach(sub => {
+            const saved = localStorage.getItem(`${doc.name} - ${sub.name}`);
+            if (saved) {
+              allProgress[`${doc.name} - ${sub.name}`] = JSON.parse(saved);
+            }
+          });
+        } else {
+          const saved = localStorage.getItem(doc.name);
+          if (saved) {
+            allProgress[doc.name] = JSON.parse(saved);
+          }
+        }
+      });
+      document.getElementById("exportedJSON").value = JSON.stringify(allProgress, null, 2);
+    }
+
+    renderStep();
   </script>
 </body>
 </html>
