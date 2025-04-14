@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Sprawdzanie Operatu Technicznego</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    .step { margin-bottom: 30px; }
+    .checkbox-group { margin-left: 20px; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Sprawdzanie Operatu Technicznego</h1>
+
+  <div id="app"></div>
+
+  <script>
+    const baseDocuments = [
+      {
+        name: "Strona Tytułowa",
+        fields: [
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Województwo, powiat, gmina, Jedn. ewid",
+          "Obręb",
+          "Działki",
+          "Wykonawca",
+          "Cel prac",
+          "Spis treści - Wszystkie potrzebne dokumenty",
+          "Data u dołu strony ≥ dacie zakończenia w sprawozdaniu"
+        ]
+      },
+      {
+        name: "Sprawozdanie techniczne",
+        fields: [
+          "Cel prac",
+          "ZGŁOSZENIE UZUPEŁNIAJĄCE NA WZN/WYZN/UST",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Wykonawca",
+          "Kierownik - imię i nazwisko oraz uprawnienia",
+          "Data rozpoczęcia przed protokołem",
+          "Data zakończenia po protokole",
+          "Czynności",
+          "Opis co podlegało inwentaryzacji",
+          "Działeczki, j.e, obr, data protokołu",
+          "Osnowa - numer i stabilizacja",
+          "Opis stabilizacji",
+          "Dokumenty wykorzystane",
+          "Info o zmianie współrzędnych",
+          "Opis odtworzenia",
+          "Podstawa ustalenia",
+          "Podstawa podziału",
+          "Technologie i metody",
+          "Bazy"
+        ]
+      },
+      {
+        name: "Mapa porównania z terenem",
+        fields: [
+          "Skala",
+          "Województwo, powiat",
+          "Gmina",
+          "Obręb",
+          "Działka",
+          "Sekcja",
+          "Data",
+          "Pieczątka kierownika",
+          "Info o zmianach",
+          "Północ",
+          "Zmiany na czerwono",
+          "Numery działek",
+          "Użytki"
+        ]
+      },
+      {
+        name: "Szkic",
+        commonFields: [
+          "Osnowa",
+          "Adres",
+          "Data zgodna ze sprawkiem",
+          "Wykonawca - pieczątka",
+          "Kierownik - pieczątka",
+          "Obręb",
+          "Numer szkicu",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Cel prac",
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne",
+          "Podpis kierownika prac"
+        ],
+        specificFields: [
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne dr, w, szczególnie jeśli zmiana to na co Bp, Br, Bi, B? Zakres zmiany? Podstawa zmiany?",
+          "Podpis kierownika prac"
+        ]
+      },
+      {
+        name: "Szkic przyjęcia",
+        commonFields: [
+          "Osnowa",
+          "Adres",
+          "Data zgodna ze sprawkiem",
+          "Wykonawca - pieczątka",
+          "Kierownik - pieczątka",
+          "Obręb",
+          "Numer szkicu",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Cel prac",
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne",
+          "Podpis kierownika prac"
+        ],
+        specificFields: [
+          "KW",
+          "Własność",
+          "Czerwonym kolorem przyjmowane granice",
+          "Użytki"
+        ]
+      },
+      {
+        name: "Szkic wznowienia/wyznaczenia",
+        commonFields: [
+          "Osnowa",
+          "Adres",
+          "Data zgodna ze sprawkiem",
+          "Wykonawca - pieczątka",
+          "Kierownik - pieczątka",
+          "Obręb",
+          "Numer szkicu",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Cel prac",
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne",
+          "Podpis kierownika prac"
+        ],
+        specificFields: [
+          "KW",
+          "Własność",
+          "Czerwonym kolorem wznawiane znaki",
+          "Stabilizacje, które zostały realnie zrealizowane",
+          "Użytki"
+        ]
+      },
+      {
+        name: "Szkic z projektem podziału nieruchomości",
+        commonFields: [
+          "Osnowa",
+          "Adres",
+          "Data zgodna ze sprawkiem",
+          "Wykonawca - pieczątka",
+          "Kierownik - pieczątka",
+          "Obręb",
+          "Numer szkicu",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Cel prac",
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne",
+          "Podpis kierownika prac"
+        ],
+        specificFields: [
+          "Na czerwono podział granic",
+          "Na czerwono punkty graniczne",
+          "Na czerwono skreślenie starego",
+          "Na żółto granice działki podlegającej podziałowi",
+          "Na zielono użytki",
+          "Służebności wpisano?"
+        ]
+      },
+      {
+        name: "Szkic z ustalenia",
+        commonFields: [
+          "Osnowa",
+          "Adres",
+          "Data zgodna ze sprawkiem",
+          "Wykonawca - pieczątka",
+          "Kierownik - pieczątka",
+          "Obręb",
+          "Numer szkicu",
+          "Identyfikator zgłoszenia prac geodezyjnych",
+          "Cel prac",
+          "Północ",
+          "Punkty mają numery",
+          "Punkty mają stabilizację",
+          "Punkty mają symbole",
+          "Odcinki mają czołówki",
+          "Linie mają miary ortogonalne",
+          "Działki mają numery",
+          "Działki mają użytki",
+          "Użytki są poprawne",
+          "Podpis kierownika prac"
+        ],
+        specificFields: [
+          "Szkic GRANICZNY",
+          "Podpisy właścicieli",
+          "Właściciele",
+          "KW",
+          "Na czerwono elementy podlegające podziałowi",
+          "Odcinki granic",
+          "Punkty graniczne",
+          "Zrealizowane stabilizacje"
+        ]
+      }
+    ];
+
+    let currentStep = 0;
+    let currentDocument = null;
+
+    function renderStep() {
+      const app = document.getElementById("app");
+      app.innerHTML = "";
+
+      if (currentStep === 0) {
+        // Menu wyboru dokumentu
+        const stepDiv = document.createElement("div");
+        stepDiv.className = "step";
+
+        const title = document.createElement("h3");
+        title.textContent = "Wybierz dokument do sprawdzenia";
+        stepDiv.appendChild(title);
+
+        baseDocuments.forEach(doc => {
+          const button = document.createElement("button");
+          button.textContent = doc.name;
+          button.onclick = () => showFields(doc);
+          stepDiv.appendChild(button);
+        });
+
+        app.appendChild(stepDiv);
+      }
+
+      if (currentStep === 1) {
+        // Wyświetlenie szczegółów wybranego dokumentu
+        const stepDiv = document.createElement("div");
+        stepDiv.className = "step";
+        
+        const title = document.createElement("h3");
+        title.textContent = `Sprawdź elementy dokumentu: ${currentDocument.name}`;
+        stepDiv.appendChild(title);
+
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.className = "checkbox-group";
+
+        // Dodajemy wspólne pola dla każdego dokumentu
+        currentDocument.commonFields && currentDocument.commonFields.forEach(field => {
+          const label = document.createElement("label");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = field;
+          checkbox.style.marginRight = "8px";
+          label.appendChild(checkbox);
+          label.append(field);
+          checkboxGroup.appendChild(label);
+          checkboxGroup.appendChild(document.createElement("br"));
+        });
+
+        // Dodajemy specyficzne pola dla danego typu dokumentu
+        currentDocument.specificFields && currentDocument.specificFields.forEach(field => {
+          const label = document.createElement("label");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = field;
+          checkbox.style.marginRight = "8px";
+          label.appendChild(checkbox);
+          label.append(field);
+          checkboxGroup.appendChild(label);
+          checkboxGroup.appendChild(document.createElement("br"));
+        });
+
+        stepDiv.appendChild(checkboxGroup);
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Dalej";
+        nextBtn.onclick = () => {
+          currentStep = 0;  // Powrót do menu wyboru dokumentu
+          renderStep();
+        };
+
+        stepDiv.appendChild(nextBtn);
+        app.appendChild(stepDiv);
+      }
+
+      if (currentStep === 2) {
+        // Zakończenie sprawdzania operatu
+        app.innerHTML = "<h2>Sprawdzanie operatu zostało zakończone ✅</h2>";
+      }
+    }
+
+    function showFields(doc) {
+      currentStep = 1;  // Zaczynamy sprawdzanie wybranego dokumentu
+      currentDocument = doc;
+      renderStep();
+    }
+
+    renderStep();  // Uruchomienie aplikacji
+  </script>
+</body>
+</html>
